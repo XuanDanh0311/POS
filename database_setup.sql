@@ -1,0 +1,36 @@
+-- Tạo database
+CREATE DATABASE IF NOT EXISTS posdb;
+USE posdb;
+
+-- Tạo bảng products với trường image
+CREATE TABLE IF NOT EXISTS products (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    price DECIMAL(10,2) NOT NULL,
+    category VARCHAR(100) NOT NULL,
+    image LONGTEXT, -- Lưu trữ base64 hoặc URL
+    stock INT DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- Thêm dữ liệu mẫu với hình ảnh base64 (đây là ví dụ với một số hình ảnh đơn giản)
+INSERT INTO products (name, price, category, image, stock) VALUES
+('Burger Deluxe', 12.99, 'food', 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjgwIiBoZWlnaHQ9IjgwIiBmaWxsPSIjRkZENzAwIi8+CjxjaXJjbGUgY3g9IjQwIiBjeT0iMzAiIHI9IjE1IiBmaWxsPSIjOEI0NTAwIi8+CjxjaXJjbGUgY3g9IjQwIiBjeT0iNTAiIHI9IjE1IiBmaWxsPSIjRkY2QjAwIi8+Cjwvc3ZnPgo=', 50),
+('Pizza Margherita', 15.99, 'food', 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjgwIiBoZWlnaHQ9IjgwIiBmaWxsPSIjRkY2QjAwIi8+CjxjaXJjbGUgY3g9IjQwIiBjeT0iNDAiIHI9IjMwIiBmaWxsPSIjRkY0NDAwIi8+CjxjaXJjbGUgY3g9IjMwIiBjeT0iMzAiIHI9IjUiIGZpbGw9IiNGRkZGRkYiLz4KPGNpcmNsZSBjeD0iNTAiIGN5PSIzMCIgcj0iNSIgZmlsbD0iI0ZGRkZGRiIvPgo8Y2lyY2xlIGN4PSI0MCIgY3k9IjUwIiByPSI1IiBmaWxsPSIjRkZGRkZGIi8+Cjwvc3ZnPgo=', 30),
+('Cappuccino', 4.99, 'drinks', 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjgwIiBoZWlnaHQ9IjgwIiBmaWxsPSIjRkZGRkZGIi8+CjxjaXJjbGUgY3g9IjQwIiBjeT0iMzAiIHI9IjIwIiBmaWxsPSIjOEI0NTAwIi8+CjxjaXJjbGUgY3g9IjQwIiBjeT0iNTUiIHI9IjE1IiBmaWxsPSIjOEI0NTAwIi8+CjxjaXJjbGUgY3g9IjQwIiBjeT0iNDAiIHI9IjEwIiBmaWxsPSIjRkZGRkZGIi8+Cjwvc3ZnPgo=', 100),
+('Chocolate Cake', 8.99, 'snacks', 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjgwIiBoZWlnaHQ9IjgwIiBmaWxsPSIjRkZGRkZGIi8+CjxyZWN0IHg9IjEwIiB5PSIzMCIgd2lkdGg9IjYwIiBoZWlnaHQ9IjMwIiBmaWxsPSIjOEI0NTAwIi8+CjxjaXJjbGUgY3g9IjQwIiBjeT0iMjAiIHI9IjEwIiBmaWxsPSIjRkY2QjAwIi8+Cjwvc3ZnPgo=', 25),
+('French Fries', 3.99, 'snacks', 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjgwIiBoZWlnaHQ9IjgwIiBmaWxsPSIjRkZGRkZGIi8+CjxyZWN0IHg9IjIwIiB5PSIzMCIgd2lkdGg9IjQiIGhlaWdodD0iMjAiIGZpbGw9IiNGRkQ3MDAiLz4KPHJlY3QgeD0iMjgiIHk9IjMwIiB3aWR0aD0iNCIgaGVpZ2h0PSIyMCIgZmlsbD0iI0ZGRDcwMCIvPgo8cmVjdCB4PSIzNiIgeT0iMzAiIHdpZHRoPSI0IiBoZWlnaHQ9IjIwIiBmaWxsPSIjRkZENzAwIi8+CjxyZWN0IHg9IjQ0IiB5PSIzMCIgd2lkdGg9IjQiIGhlaWdodD0iMjAiIGZpbGw9IiNGRkQ3MDAiLz4KPHJlY3QgeD0iNTIiIHk9IjMwIiB3aWR0aD0iNCIgaGVpZ2h0PSIyMCIgZmlsbD0iI0ZGRDcwMCIvPgo8L3N2Zz4K', 75),
+('Orange Juice', 2.99, 'drinks', 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjgwIiBoZWlnaHQ9IjgwIiBmaWxsPSIjRkZGRkZGIi8+CjxjaXJjbGUgY3g9IjQwIiBjeT0iMzAiIHI9IjIwIiBmaWxsPSIjRkZBNzAwIi8+CjxjaXJjbGUgY3g9IjQwIiBjeT0iNTUiIHI9IjE1IiBmaWxsPSIjRkZBNzAwIi8+Cjwvc3ZnPgo=', 60);
+
+-- Tạo bảng users nếu cần
+CREATE TABLE IF NOT EXISTS users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(100) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    role ENUM('admin', 'cashier') DEFAULT 'cashier',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+); 
+
+ALTER TABLE products ADD COLUMN image LONGTEXT; 
+ALTER TABLE products ADD COLUMN updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP; 
