@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Restro POS</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f5f5f5;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .container {
+      display: grid;
+      grid-template-columns: 250px 1fr 350px;
+      height: 100vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      background: #2c3e50;
+      color: white;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar h4 {
+      font-size: 20px;
+      margin-bottom: 30px;
+      text-align: center;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #34495e;
+    }
+
+    .sidebar ul {
+      list-style: none;
+      flex: 1;
+    }
+
+    .sidebar li {
+      margin-bottom: 10px;
+    }
+
+    .sidebar a {
+      display: block;
+      padding: 12px 15px;
+      color: #bdc3c7;
+      text-decoration: none;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+
+    .sidebar a:hover, .sidebar a.active {
+      background: #3498db;
+      color: white;
+    }
+
+    /* Main Content */
+    .main {
+      background: white;
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid #e0e0e0;
+    }
+
+    .top-bar input {
+      flex: 1;
+      max-width: 400px;
+      padding: 12px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 16px;
+      margin-right: 15px;
+    }
+
+    .top-bar input:focus {
+      outline: none;
+      border-color: #3498db;
+    }
+
+    .top-bar button {
+      padding: 12px 20px;
+      background: #3498db;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .top-bar button:hover {
+      background: #2980b9;
+    }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .tabs a {
+      padding: 10px 20px;
+      background: #f8f9fa;
+      border: 1px solid #dee2e6;
+      border-radius: 20px;
+      text-decoration: none;
+      color: #6c757d;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .tabs a.active, .tabs a:hover {
+      background: #3498db;
+      color: white;
+      border-color: #3498db;
+    }
+
+    /* Product Grid */
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 20px;
+    }
+
+    .menu-item {
+      background: white;
+      border: 1px solid #e0e0e0;
+      border-radius: 12px;
+      padding: 15px;
+      text-align: center;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .menu-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    .menu-item img {
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+
+    .menu-item h6 {
+      font-size: 14px;
+      font-weight: 600;
+      color: #2c3e50;
+      margin-bottom: 8px;
+      line-height: 1.3;
+    }
+
+    .menu-item p {
+      color: #e74c3c;
+      font-weight: bold;
+      font-size: 16px;
+      margin-bottom: 12px;
+    }
+
+    .add-btn {
+      width: 100%;
+      padding: 8px;
+      background: #27ae60;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      transition: background 0.3s ease;
+    }
+
+    .add-btn:hover {
+      background: #229954;
+    }
+
+    /* Order Summary */
+    .order-box {
+      background: #2c3e50;
+      color: white;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .order-box h5 {
+      font-size: 18px;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #34495e;
+    }
+
+    #order-list {
+      flex: 1;
+      overflow-y: auto;
+      margin-bottom: 15px;
+    }
+
+    .order-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid #34495e;
+      font-size: 14px;
+    }
+
+    .order-item .qty {
+      color: #95a5a6;
+      font-size: 12px;
+    }
+
+    .order-item .total-price {
+      font-weight: 600;
+      color: #e74c3c;
+    }
+
+    hr {
+      border: none;
+      border-top: 1px solid #34495e;
+      margin: 15px 0;
+    }
+
+    .order-box p {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+
+    .order-box h5:last-of-type {
+      border-bottom: none;
+      margin-top: 10px;
+      font-size: 20px;
+      color: #e74c3c;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .btn-secondary, .btn-success {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      transition: background 0.3s ease;
+    }
+
+    .btn-secondary {
+      background: #95a5a6;
+      color: white;
+    }
+
+    .btn-secondary:hover {
+      background: #7f8c8d;
+    }
+
+    .btn-success {
+      background: #27ae60;
+      color: white;
+    }
+
+    .btn-success:hover {
+      background: #229954;
+    }
+
+    /* Responsive */
+    @media (max-width: 1200px) {
+      .container {
+        grid-template-columns: 200px 1fr 300px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 1fr auto;
+      }
+      
+      .sidebar {
+        order: 1;
+        padding: 10px;
+      }
+      
+      .sidebar ul {
+        display: flex;
+        gap: 10px;
+        overflow-x: auto;
+      }
+      
+      .sidebar li {
+        margin-bottom: 0;
+        flex-shrink: 0;
+      }
+      
+      .main {
+        order: 2;
+      }
+      
+      .order-box {
+        order: 3;
+        max-height: 300px;
+      }
+      
+      .product-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 15px;
+      }
+    }
+
+    /* Loading */
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #7f8c8d;
+    }
+
+    .loading i {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    .loading small {
+      display: block;
+      margin-top: 10px;
+      font-size: 12px;
+      color: #e74c3c;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <h4><i class="fas fa-utensils"></i> Restro POS</h4>
+      <ul>
+        <li><a href="#" class="active"><i class="fas fa-home"></i> Home</a></li>
+        <li><a href="#"><i class="fas fa-users"></i> Customers</a></li>
+        <li><a href="#"><i class="fas fa-chair"></i> Tables</a></li>
+        <li><a href="orders.html"><i class="fas fa-shopping-cart"></i> Orders</a></li>
+        <li><a href="#"><i class="fas fa-chart-bar"></i> Reports</a></li>
+        <li><a href="./admin.html"><i class="fa fa-address-card"></i> Admind</a></li>
+      </ul>
+    </div>
+
+    <!-- Main -->
+    <div class="main">
+      <div class="top-bar">
+        <input type="text" placeholder="Search products..." id="searchInput">
+        <button id="selectTableBtn"><i class="fas fa-chair"></i> Select Table</button>
+      </div>
+
+      <div class="tabs">
+        <a href="#" class="active" data-category="food">Lunch</a>
+        <a href="#" data-category="drinks">Breakfast</a>
+        <a href="#" data-category="snacks">Desserts</a>
+      </div>
+
+      <div class="product-grid" id="product-list">
+        <div class="loading">
+          <i class="fas fa-spinner fa-spin"></i>
+          <p>Loading products...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Order Summary -->
+    <div class="order-box">
+      <div>
+        <h5><i class="fas fa-receipt"></i> Order Summary</h5>
+        <div id="order-list"></div>
+        <hr>
+        <p>Subtotal: <strong id="subtotal">$0.00</strong></p>
+        <p>Tax (10%): <strong id="tax">$0.00</strong></p>
+        <h5>Total: <strong id="total">$0.00</strong></h5>
+      </div>
+      <div class="buttons">
+        <button class="btn-secondary" id="holdOrderBtn">
+          <i class="fas fa-pause"></i> Hold Order
+        </button>
+        <button class="btn-success" id="proceedBtn">
+          <i class="fas fa-check"></i> Proceed
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Global variables
+    let products = [];
+    let currentCategory = 'food';
+    let orderItems = {};
+    let subtotal = 0;
+
+    // DOM elements
+    const productList = document.getElementById('product-list');
+    const orderList = document.getElementById('order-list');
+    const subtotalEl = document.getElementById('subtotal');
+    const taxEl = document.getElementById('tax');
+    const totalEl = document.getElementById('total');
+    const searchInput = document.getElementById('searchInput');
+
+    // Initialize
+    window.onload = function() {
+      loadProducts();
+      setupEventListeners();
+    };
+
+    // Setup event listeners
+    function setupEventListeners() {
+      // Tab switching
+      document.querySelectorAll('.tabs a').forEach(tab => {
+        tab.addEventListener('click', (e) => {
+          e.preventDefault();
+          document.querySelectorAll('.tabs a').forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+          currentCategory = tab.getAttribute('data-category');
+          filterProducts();
+        });
+      });
+
+      // Search
+      searchInput.addEventListener('input', filterProducts);
+
+      // Buttons
+      document.getElementById('holdOrderBtn').addEventListener('click', holdOrder);
+      document.getElementById('proceedBtn').addEventListener('click', proceedOrder);
+      document.getElementById('selectTableBtn').addEventListener('click', selectTable);
+    };
+
+    // Load products from API
+    async function loadProducts() {
+      try {
+        console.log('Loading products...');
+        const response = await fetch('/api/products');
+        console.log('Response status:', response.status);
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        console.log('Products data:', data);
+        
+        products = data.products || [];
+        console.log('Products loaded:', products.length);
+        
+        if (products.length === 0) {
+          productList.innerHTML = '<div class="loading"><i class="fas fa-info-circle"></i><p>No products found in database</p></div>';
+        } else {
+          displayProducts();
+        }
+      } catch (error) {
+        console.error('Error loading products:', error);
+        productList.innerHTML = `
+          <div class="loading">
+            <i class="fas fa-exclamation-triangle"></i>
+            <p>Error loading products</p>
+            <small>${error.message}</small>
+          </div>
+        `;
+      }
+    }
+
+    // Display products
+    function displayProducts(productsToShow = products) {
+      console.log('Displaying products:', productsToShow.length);
+      
+      if (productsToShow.length === 0) {
+        productList.innerHTML = '<div class="loading"><i class="fas fa-search"></i><p>No products found</p></div>';
+        return;
+      }
+
+      productList.innerHTML = productsToShow.map(product => `
+        <div class="menu-item">
+          <img src="/api/products/${product.id}/image" alt="${product.name}" onerror="this.src='/images/default.jpg'">
+          <h6>${product.name}</h6>
+          <p>$${parseFloat(product.price).toFixed(2)}</p>
+          <button class="add-btn" data-id="${product.id}" data-name="${product.name}" data-price="${product.price}">
+            <i class="fas fa-plus"></i> Add
+          </button>
+        </div>
+      `).join('');
+
+      // Reattach event listeners
+      document.querySelectorAll('.add-btn').forEach(btn => {
+        btn.addEventListener('click', addToOrder);
+      });
+      
+      console.log('Products displayed successfully');
+    }
+
+    // Filter products
+    function filterProducts() {
+      const searchTerm = searchInput.value.toLowerCase();
+      let filteredProducts = products;
+
+      // Filter by category
+      if (currentCategory !== 'all') {
+        filteredProducts = products.filter(product => product.category === currentCategory);
+      }
+
+      // Filter by search term
+      if (searchTerm) {
+        filteredProducts = filteredProducts.filter(product => 
+          product.name.toLowerCase().includes(searchTerm)
+        );
+      }
+
+      displayProducts(filteredProducts);
+    }
+
+    // Add to order
+    function addToOrder() {
+      const id = this.getAttribute('data-id');
+      const name = this.getAttribute('data-name');
+      const price = parseFloat(this.getAttribute('data-price'));
+
+      if (orderItems[id]) {
+        // Increase quantity
+        orderItems[id].qty += 1;
+        orderItems[id].el.querySelector('.qty').textContent = `x${orderItems[id].qty}`;
+        orderItems[id].el.querySelector('.total-price').textContent = `$${(price * orderItems[id].qty).toFixed(2)}`;
+      } else {
+        // Create new item
+        const item = document.createElement('div');
+        item.classList.add('order-item');
+        item.innerHTML = `
+          <span>${name} <span class="qty">x1</span></span>
+          <span class="total-price">$${price.toFixed(2)}</span>
+        `;
+        orderList.appendChild(item);
+        orderItems[id] = { id: parseInt(id), name, qty: 1, price, el: item };
+      }
+
+      updateTotals();
+    }
+
+    // Update totals
+    function updateTotals() {
+      subtotal = Object.values(orderItems).reduce((sum, item) => sum + (item.price * item.qty), 0);
+      const tax = subtotal * 0.1;
+      const total = subtotal + tax;
+
+      subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
+      taxEl.textContent = `$${tax.toFixed(2)}`;
+      totalEl.textContent = `$${total.toFixed(2)}`;
+    }
+
+    // Hold order
+    function holdOrder() {
+      if (Object.keys(orderItems).length === 0) {
+        alert('No items in order to hold');
+        return;
+      }
+      
+      // Save order to localStorage for later
+      const orderData = {
+        items: orderItems,
+        subtotal: subtotal,
+        timestamp: new Date().toISOString()
+      };
+      
+      const heldOrders = JSON.parse(localStorage.getItem('heldOrders') || '[]');
+      heldOrders.push(orderData);
+      localStorage.setItem('heldOrders', JSON.stringify(heldOrders));
+      
+      clearOrder();
+      alert('Order held successfully!');
+    }
+
+            // Proceed order
+        async function proceedOrder() {
+            if (Object.keys(orderItems).length === 0) {
+                alert('No items in order');
+                return;
+            }
+
+            // Lấy số bàn nếu có, nếu không thì để rỗng
+            let tableNumber = '';
+            const tableBtn = document.getElementById('selectTableBtn');
+            if (tableBtn && tableBtn.textContent.startsWith('Table ')) {
+                tableNumber = tableBtn.textContent.replace('Table ', '');
+            }
+            // Không hỏi notes nữa, để rỗng
+            const notes = '';
+
+            // Prepare order data
+            const orderData = {
+                table_number: tableNumber,
+                items: Object.values(orderItems).map(item => ({
+                    id: item.id,
+                    name: item.name,
+                    quantity: item.qty,
+                    price: item.price
+                })),
+                payment_method: 'cash',
+                notes: notes
+            };
+
+            try {
+                // Create order in database
+                const response = await fetch('/api/orders', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(orderData)
+                });
+
+                if (response.ok) {
+                    const order = await response.json();
+                    
+                    // Generate receipt
+                    let fileContent = '======== UNNIE KITCHEN ========\n\n';
+                    fileContent += `Order #: ${order.order_number}\n`;
+                    fileContent += `Table: ${tableNumber || 'N/A'}\n`;
+                    fileContent += `Date: ${new Date().toLocaleString()}\n\n`;
+                    fileContent += 'Item                         Qty   Total\n';
+                    fileContent += '----------------------------------------\n';
+
+                    for (let id in orderItems) {
+                        const item = orderItems[id];
+                        const product = products.find(p => p.id == id);
+                        const name = product ? product.name : 'Unknown Item';
+                        const paddedName = name.padEnd(28, ' ');
+                        const paddedQty = (`x${item.qty}`).padEnd(5, ' ');
+                        const totalPrice = `$${(item.price * item.qty).toFixed(2)}`;
+                        fileContent += `${paddedName}${paddedQty}${totalPrice}\n`;
+                    }
+
+                    fileContent += '\n----------------------------------------\n';
+                    fileContent += `Subtotal:                  $${subtotal.toFixed(2)}\n`;
+                    const tax = subtotal * 0.1;
+                    const total = subtotal + tax;
+                    fileContent += `Tax (10%):                 $${tax.toFixed(2)}\n`;
+                    fileContent += `Total:                     $${total.toFixed(2)}\n`;
+                    fileContent += '========================================\n';
+
+                    // Download receipt
+                    const blob = new Blob([fileContent], { type: 'text/plain' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `order-${order.order_number}.txt`;
+                    a.click();
+                    URL.revokeObjectURL(url);
+
+                    // Clear order
+                    clearOrder();
+                    alert(`Order ${order.order_number} completed successfully! Receipt downloaded.`);
+                } else {
+                    const error = await response.json();
+                    alert('Error creating order: ' + error.error);
+                }
+            } catch (error) {
+                console.error('Error creating order:', error);
+                alert('Error creating order. Please try again.');
+            }
+        }
+
+    // Clear order
+    function clearOrder() {
+      orderItems = {};
+      subtotal = 0;
+      orderList.innerHTML = '';
+      updateTotals();
+    }
+
+    // Select table (placeholder)
+    function selectTable() {
+      const tableNumber = prompt('Enter table number:');
+      if (tableNumber) {
+        document.getElementById('selectTableBtn').textContent = `Table ${tableNumber}`;
+      }
+    }
+  </script>
+</body>
+</html> 
